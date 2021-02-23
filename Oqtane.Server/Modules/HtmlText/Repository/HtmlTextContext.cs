@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Oqtane.Modules.HtmlText.Models;
 using Oqtane.Repository;
 using Microsoft.AspNetCore.Http;

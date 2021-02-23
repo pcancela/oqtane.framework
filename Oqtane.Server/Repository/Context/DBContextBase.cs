@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Oqtane.Enums;
+using Oqtane.Extensions;
 using Oqtane.Models;
 
 namespace Oqtane.Repository
 {
-    public class DBContextBase :  IdentityUserContext<IdentityUser> 
+    public class DBContextBase : IdentityUserContext<IdentityUser> 
     {
         private ITenantResolver _tenantResolver;
         private IHttpContextAccessor _accessor;
@@ -22,11 +24,10 @@ namespace Oqtane.Repository
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var tenant = _tenantResolver.GetTenant();
+            var sqlType = tenant.DBSqlType.ToEnum<SqlType>();
             if (tenant != null)
             {
-                optionsBuilder.UseSqlServer(tenant.DBConnectionString
-                        .Replace("|DataDirectory|", AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString())
-                );
+                optionsBuilder.UseConfiguredSqlProvider(sqlType, tenant.DBEngineVersion, tenant.DBConnectionString.Replace("|DataDirectory|", AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString()));
             }
             base.OnConfiguring(optionsBuilder);
         }

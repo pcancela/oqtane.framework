@@ -2,6 +2,8 @@ namespace Oqtane.Shared
 {
     public class InstallConfig
     {
+        public string DatabaseType { get; set; }
+        public string DatabaseEngineVersion { get; set; }
         public string ConnectionString { get; set; }
         public string Aliases { get; set; }
         public string TenantName { get; set; }

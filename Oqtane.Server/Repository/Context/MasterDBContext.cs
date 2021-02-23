@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Oqtane.Models;
 using Microsoft.Extensions.Configuration;
+using Oqtane.Extensions;
+using Oqtane.Enums;
 
 namespace Oqtane.Repository
 {
@@ -20,11 +22,11 @@ namespace Oqtane.Repository
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            var sqlType = _configuration.GetSection("Database:DatabaseType").Value.ToEnum<SqlType>();
+            var databaseEngineVersion = _configuration.GetSection("Database:DatabaseEngineVersion").Value;
             if (!string.IsNullOrEmpty(_configuration.GetConnectionString("DefaultConnection")))
             {
-                optionsBuilder.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")
-                    .Replace("|DataDirectory|", AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString())
-                );
+                optionsBuilder.UseConfiguredSqlProvider(sqlType, databaseEngineVersion, _configuration.GetConnectionString("DefaultConnection"));
             }
             base.OnConfiguring(optionsBuilder);
         }

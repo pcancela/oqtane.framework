@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Oqtane.Models
 {
@@ -6,7 +6,9 @@ namespace Oqtane.Models
     {
         public int TenantId { get; set; }
         public string Name { get; set; }
+        public string DBSqlType { get; set; }
         public string DBConnectionString { get; set; }
+        public string DBEngineVersion { get; set; }
         public string Version { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }

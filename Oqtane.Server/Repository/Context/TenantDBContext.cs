@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Oqtane.Models;
 
 namespace Oqtane.Repository
@@ -27,6 +28,5 @@ namespace Oqtane.Repository
         {
             // DBContextBase handles multi-tenant database connections
         }
-
     }
 }

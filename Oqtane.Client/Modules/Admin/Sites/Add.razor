@@ -1,6 +1,6 @@
 @namespace Oqtane.Modules.Admin.Sites
 @inherits ModuleBase
-@inject NavigationManager NavigationManager
+@inject NavigationManager NavigationManager 
 @inject ITenantService TenantService
 @inject IAliasService AliasService
 @inject ISiteService SiteService
@@ -142,9 +142,10 @@ else
                 <Label For="databaseType" HelpText="Select the database type for the tenant" ResourceKey="DatabaseType">Database Type: </Label>
             </td>
             <td>
-                <select id="databaseType" class="custom-select" @bind="@_databasetype">
+                <select id="databaseType" class="custom-select" @onchange="SetDatabaseType">
                     <option value="LocalDB">@Localizer["Local Database"]</option>
                     <option value="SQLServer">@Localizer["SQL Server"]</option>
+                    <option value="MySQL">@Localizer["MySQL"]</option>
                 </select>
             </td>
         </tr>
@@ -156,6 +157,25 @@ else
                 <input id="server" type="text" class="form-control" @bind="@_server" />
             </td>
         </tr>
+        @if (_databasetype == "MySQL")
+        {
+            <tr>
+                <td>
+                    <Label For="server" HelpText="Enter the database server port" ResourceKey="DatabaseServerPort">Port: </Label>
+                </td>
+                <td>
+                    <input id="mysqlDatabasePort" type="text" class="form-control" @bind="@_databasePort" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <Label For="server" HelpText="Enter database version (MySQL)" ResourceKey="DatabaseServerPort">Version: </Label>
+                </td>
+                <td>
+                    <input id="mysqlDatabasePort" type="text" class="form-control" @bind="@_databaseEngineVersion" />
+                </td>
+            </tr>
+        }
         <tr>
             <td>
                 <Label For="database" HelpText="Enter the database for the tenant" ResourceKey="Database">Database: </Label>
@@ -169,10 +189,20 @@ else
                 <Label For="integratedSecurity" HelpText="Select if you want integrated security or not" ResourceKey="IntegratedSecurity">Integrated Security: </Label>
             </td>
             <td>
-                <select id="integratedSecurity" class="custom-select" @onchange="SetIntegratedSecurity">
-                    <option value="true" selected>@Localizer["True"]</option>
-                    <option value="false">@Localizer["False"]</option>
-                </select>
+                @if (_databasetype == "MySQL")
+                {
+                    <select id="integratedSecurity" class="custom-select" @onchange="SetIntegratedSecurity" disabled>
+                        <option value="true">@Localizer["True"]</option>
+                        <option value="false" selected>@Localizer["False"]</option>
+                    </select>
+                }
+                else
+                {
+                    <select id="integratedSecurity" class="custom-select" @onchange="SetIntegratedSecurity">
+                        <option value="true" selected>@Localizer["True"]</option>
+                        <option value="false">@Localizer["False"]</option>
+                    </select>
+                }
             </td>
         </tr>
         @if (!_integratedsecurity)
@@ -228,6 +258,8 @@ else
     private string _tenantname = string.Empty;
     private string _databasetype = "LocalDB";
     private string _server = "(LocalDb)\\MSSQLLocalDB";
+    private string _databasePort = "3306";
+    private string _databaseEngineVersion = "";
     private string _database = "Oqtane-" + DateTime.UtcNow.ToString("yyyyMMddHHmm");
     private string _username = string.Empty;
     private string _password = string.Empty;
@@ -262,6 +294,23 @@ else
             _tenantname = _name;
         }
         StateHasChanged();
+    }
+
+    private void SetDatabaseType(ChangeEventArgs e)
+    {
+        var dbType = (string)e.Value;
+
+        if (dbType == "MySQL")
+        {
+            _server = string.Empty;
+            SetIntegratedSecurity(new ChangeEventArgs() { Value = "false" });
+        }
+        else
+        {
+            SetIntegratedSecurity(new ChangeEventArgs() { Value = "true" });
+        }
+
+        _databasetype = dbType;
     }
 
     private void SetIntegratedSecurity(ChangeEventArgs e)
@@ -341,6 +390,10 @@ else
                                 {
                                     connectionString = "Data Source=" + _server + ";AttachDbFilename=|DataDirectory|\\" + _database + ".mdf;Initial Catalog=" + _database + ";Integrated Security=SSPI;";
                                 }
+                                else if (_databasetype == "MySQL")
+                                {
+                                    connectionString = $"Server={_server};Port={_databasePort};User Id={_username};Password={_password};Database={_database};";
+                                }
                                 else
                                 {
                                     connectionString = "Data Source=" + _server + ";Initial Catalog=" + _database + ";";
@@ -355,6 +408,8 @@ else
                                     }
                                 }
 
+                                config.DatabaseType = _databasetype;
+                                config.DatabaseEngineVersion = _databaseEngineVersion;
                                 config.ConnectionString = connectionString;
                                 config.HostPassword = _hostpassword;
                                 config.HostEmail = user.Email;

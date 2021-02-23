@@ -14,7 +14,7 @@ else
     <table class="table table-borderless">
         <tr>
             <td>
-                <Label For="tenant" HelpText="Select the tenant for the SQL server" ResourceKey="Tenant">Tenant: </Label>
+                <Label For="tenant" HelpText="Select the tenant where to execute the query" ResourceKey="Tenant">Tenant: </Label>
             </td>
             <td>
                 <select id="teneant" class="form-control" @bind="_tenantid">
@@ -28,7 +28,7 @@ else
         </tr>
         <tr>
             <td>
-                <Label For="sqlQeury" HelpText="Enter the query for the SQL server" ResourceKey="SqlQuery">SQL Query: </Label>
+                <Label For="sqlQeury" HelpText="Enter the query" ResourceKey="SqlQuery">SQL Query: </Label>
             </td>
             <td>
                 <textarea id="sqlQeury" class="form-control" @bind="@_sql" rows="5"></textarea>

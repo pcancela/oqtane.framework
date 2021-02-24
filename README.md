@@ -1,6 +1,6 @@
 # PoC - MySQL database support for Oqtane Framework
 
-The main objective for the creation of this fork was to perform some kind of a proof of concept around the addition of cross platform database support to Oqtane Framework. The result of this effort can be seen at **[](https://github.com/pcancela/oqtane.framework/tree/oqtane-add-mysql)**
+The main objective for the creation of this fork was to perform some kind of a proof of concept around the addition of cross platform database support to Oqtane Framework. The result of this effort can be seen at **[MySQL database support](https://github.com/pcancela/oqtane.framework/tree/oqtane-add-mysql)**
 
 # Oqtane Framework
 

@@ -27,7 +27,7 @@ namespace Oqtane.Repository
 
             if (assembly != null)
             {
-                string name = assembly.GetManifestResourceNames().FirstOrDefault(item => item.EndsWith("." + filename));
+                string name = assembly.GetManifestResourceNames().FirstOrDefault(item => item.EndsWith($"{GetSqlType()}." + filename));
                 if (name != null)
                 {
                     Stream resourceStream = assembly.GetManifestResourceStream(name);

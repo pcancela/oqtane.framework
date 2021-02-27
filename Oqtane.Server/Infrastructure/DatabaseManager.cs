@@ -536,20 +536,15 @@ namespace Oqtane.Infrastructure
         public void UpdateMasterSqlType(SqlType sqlType)
         {
             var sqlTypeName = Enum.GetName(sqlType);
-            if (GetDatabaseConfig(SettingKeys.DatabaseTypeKey, string.Empty) == string.Empty)
-            {
-                AddOrUpdateAppSetting($"Database:{SettingKeys.DatabaseTypeKey}", sqlTypeName);
-                _config.Reload();
-            }
+
+            AddOrUpdateAppSetting($"Database:{SettingKeys.DatabaseTypeKey}", sqlTypeName);
+            _config.Reload();
         }
 
         public void UpdateMasterDatabaseVersion(string version)
         {
-            if (GetDatabaseConfig(SettingKeys.DatabaseEngineVersionKey, string.Empty) == string.Empty)
-            {
-                AddOrUpdateAppSetting($"Database:{SettingKeys.DatabaseEngineVersionKey}", version);
-                _config.Reload();
-            }
+            AddOrUpdateAppSetting($"Database:{SettingKeys.DatabaseEngineVersionKey}", version);
+            _config.Reload();
         }
 
         public void UpdateConnectionString(string connectionString)

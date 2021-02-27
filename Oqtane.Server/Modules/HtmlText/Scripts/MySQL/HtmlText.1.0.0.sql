@@ -1,11 +1,11 @@
 CREATE TABLE `HtmlText`(
-	`HtmlTextId` int AUTO_INCREMENT NOT NULL,
-	`ModuleId` int NOT NULL,
-	`Content` varchar(21844) NOT NULL,
-	`CreatedBy` varchar(256) NOT NULL,
-	`CreatedOn` datetime NOT NULL,
-	`ModifiedBy` varchar(256) NOT NULL,
-	`ModifiedOn` datetime NOT NULL,
+	`HtmlTextId` INT AUTO_INCREMENT NOT NULL,
+	`ModuleId` INT NOT NULL,
+	`Content`  TEXT NOT NULL,
+	`CreatedBy` VARCHAR(256) NOT NULL,
+	`CreatedOn` DATETIME NOT NULL,
+	`ModifiedBy` VARCHAR(256) NOT NULL,
+	`ModifiedOn` DATETIME NOT NULL,
   CONSTRAINT `PK_HtmlText` PRIMARY KEY 
   (
 	`HtmlTextId` ASC

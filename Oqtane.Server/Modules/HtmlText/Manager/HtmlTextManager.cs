@@ -1,31 +1,39 @@
-﻿using Oqtane.Infrastructure;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using Oqtane.Enums;
+using Oqtane.Extensions;
+using Oqtane.Infrastructure;
 using Oqtane.Models;
-using Oqtane.Repository;
 using Oqtane.Modules.HtmlText.Models;
 using Oqtane.Modules.HtmlText.Repository;
-using System.Net;
+using Oqtane.Repository;
 
 namespace Oqtane.Modules.HtmlText.Manager
 {
     public class HtmlTextManager : IInstallable, IPortable
     {
         private IHtmlTextRepository _htmlTexts;
-        private ISqlRepository _sql;
+        private IEnumerable<ISqlRepository> _sqlRepositories;
 
-        public HtmlTextManager(IHtmlTextRepository htmltexts, ISqlRepository sql)
+        public HtmlTextManager(IHtmlTextRepository htmltexts, IEnumerable<ISqlRepository> sqlRepositories)
         {
             _htmlTexts = htmltexts;
-            _sql = sql;
+            _sqlRepositories = sqlRepositories;
         }
 
         public bool Install(Tenant tenant, string version)
         {
-            return _sql.ExecuteScript(tenant, GetType().Assembly, "HtmlText." + version + ".sql");
+            var sqlType = tenant.DBSqlType.ToEnum<SqlType>();
+            var sql = _sqlRepositories.FirstOrDefault(r => r.GetSqlType() == sqlType);
+            return sql.ExecuteScript(tenant, GetType().Assembly, "HtmlText." + version + ".sql");
         }
 
         public bool Uninstall(Tenant tenant)
         {
-            return _sql.ExecuteScript(tenant, GetType().Assembly, "HtmlText.Uninstall.sql");
+            var sqlType = tenant.DBSqlType.ToEnum<SqlType>();
+            var sql = _sqlRepositories.FirstOrDefault(r => r.GetSqlType() == sqlType);
+            return sql.ExecuteScript(tenant, GetType().Assembly, "HtmlText.Uninstall.sql");
         }
 
         public string ExportModule(Module module)

@@ -14,6 +14,12 @@ namespace Oqtane.Repository
         private IHttpContextAccessor _accessor;
         private IConfiguration _configuration;
 
+        // Constructor for EF Core Migrations 
+        public MasterDBContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public MasterDBContext(DbContextOptions<MasterDBContext> options, IHttpContextAccessor accessor, IConfiguration configuration) : base(options)
         {
             _accessor = accessor;
@@ -26,7 +32,7 @@ namespace Oqtane.Repository
             var databaseEngineVersion = _configuration.GetSection("Database:DatabaseEngineVersion").Value;
             if (!string.IsNullOrEmpty(_configuration.GetConnectionString("DefaultConnection")))
             {
-                optionsBuilder.UseConfiguredSqlProvider(sqlType, databaseEngineVersion, _configuration.GetConnectionString("DefaultConnection"));
+                optionsBuilder.UseConfiguredSqlProvider(sqlType, "Master", databaseEngineVersion, _configuration.GetConnectionString("DefaultConnection"));
             }
             base.OnConfiguring(optionsBuilder);
         }

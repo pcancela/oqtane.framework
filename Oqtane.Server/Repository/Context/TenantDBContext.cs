@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Oqtane.Enums;
+using Oqtane.Extensions;
 using Oqtane.Models;
 
 namespace Oqtane.Repository
@@ -23,10 +24,33 @@ namespace Oqtane.Repository
         public virtual DbSet<File> File { get; set; }
 
         public virtual DbSet<Language> Language { get; set; }
+        public virtual DbSet<HtmlText> HtmlText { get; set; }
+
+        public string InstallerSqlType { get; set; }
+        public string InstallerDatabaseEngineVersion { get; set; }
+        public string InstallerConnectionString { get; set; }
 
         public TenantDBContext(ITenantResolver tenantResolver, IHttpContextAccessor accessor) : base(tenantResolver, accessor)
         {
             // DBContextBase handles multi-tenant database connections
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (TenantResolver?.GetTenant() == null)
+            {
+                //var sqlType = SqlType.MSSQL;//InstallerSqlType.ToEnum<SqlType>();
+                //var databaseEngineVersion = "";//InstallerDatabaseEngineVersion;
+                //var connectionString = "Data Source=PPC09;Initial Catalog=Oqtane-202103031301;Integrated Security=SSPI;";//InstallerConnectionString;
+                var sqlType = InstallerSqlType.ToEnum<SqlType>();
+                var databaseEngineVersion = InstallerDatabaseEngineVersion;
+                var connectionString = InstallerConnectionString;
+                optionsBuilder.UseConfiguredSqlProvider(sqlType, "Tenant", databaseEngineVersion, connectionString);
+            }
+            else
+            {
+                base.OnConfiguring(optionsBuilder);
+            }
         }
     }
 }

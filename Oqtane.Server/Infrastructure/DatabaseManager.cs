@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using DbUp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -170,21 +168,11 @@ namespace Oqtane.Infrastructure
 
                     var sqlType = install.DatabaseType.ToEnum<SqlType>();
 
-                    using (var dbc = new DbContext(new DbContextOptionsBuilder().UseConfiguredSqlProvider(sqlType, install.DatabaseEngineVersion, NormalizeConnectionString(install.ConnectionString)).Options))
+                    using (var dbc = new DbContext(new DbContextOptionsBuilder().UseConfiguredSqlProvider(sqlType, "Master", install.DatabaseEngineVersion, NormalizeConnectionString(install.ConnectionString)).Options))
                     {
                         // create empty database if it does not exist       
                         dbc.Database.EnsureCreated();
                         result.Success = true;
-                    }
-
-                    if (result.Success && install.TenantName == TenantNames.Master)
-                    {
-                        UpdateMasterSqlType(sqlType);
-
-                        if (sqlType == SqlType.MySQL)
-                        {
-                            UpdateMasterDatabaseVersion(install.DatabaseEngineVersion);
-                        }
                     }
                 }
                 catch (Exception ex)
@@ -207,33 +195,33 @@ namespace Oqtane.Infrastructure
             if (install.TenantName == TenantNames.Master)
             {
                 var sqlType = install.DatabaseType.ToEnum<SqlType>();
-                var scriptType = $"{sqlType}.Master.";
 
-                MigrateScriptNamingConvention(sqlType, scriptType, install.ConnectionString);
+                UpdateConnectionString(install.ConnectionString);
 
-                var upgradeConfig = DeployChanges
-                .To
-                .ConfiguredSqlDatabase(sqlType, NormalizeConnectionString(install.ConnectionString))
-                .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), s => s.Contains(scriptType) && s.EndsWith(".sql", StringComparison.OrdinalIgnoreCase));
+                UpdateMasterSqlType(sqlType);
 
-                var upgrade = upgradeConfig.Build();
-                if (upgrade.IsUpgradeRequired())
+                if (sqlType == SqlType.MySQL)
                 {
-                    var upgradeResult = upgrade.PerformUpgrade();
-                    result.Success = upgradeResult.Successful;
-                    if (!result.Success)
-                    {
-                        result.Message = upgradeResult.Error.Message;
-                    }
+                    UpdateMasterDatabaseVersion(install.DatabaseEngineVersion);
                 }
-                else
+
+                using (var masterDbContext = new MasterDBContext(_config))
                 {
+                    // Push latest model into database      
+                    masterDbContext.Database.Migrate();
                     result.Success = true;
                 }
 
-                if (result.Success)
+                if (!result.Success)
                 {
-                    UpdateConnectionString(install.ConnectionString);
+                    UpdateConnectionString(string.Empty);
+
+                    UpdateMasterSqlType(null);
+
+                    if (sqlType == SqlType.MySQL)
+                    {
+                        UpdateMasterDatabaseVersion(string.Empty);
+                    }
                 }
             }
             else
@@ -295,26 +283,26 @@ namespace Oqtane.Infrastructure
                     foreach (var tenant in db.Tenant.ToList())
                     {
                         var installSqlType = tenant.DBSqlType.ToEnum<SqlType>();
-                        var scriptType = $"{installSqlType}.Tenant.";
 
-                        MigrateScriptNamingConvention(installSqlType, scriptType, tenant.DBConnectionString);
-
-                        var upgradeConfig = DeployChanges
-                            .To
-                            .ConfiguredSqlDatabase(installSqlType, NormalizeConnectionString(tenant.DBConnectionString))
-                            .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), s => s.Contains(scriptType) && s.EndsWith(".sql", StringComparison.OrdinalIgnoreCase));
-
-                        var upgrade = upgradeConfig.Build();
-                        if (upgrade.IsUpgradeRequired())
+                        try
                         {
-                            var upgradeResult = upgrade.PerformUpgrade();
-                            result.Success = upgradeResult.Successful;
-                            if (!result.Success)
+                            var tenantResolver = scope.ServiceProvider.GetRequiredService<ITenantResolver>();
+
+                            using (var tenantDbContext = new TenantDBContext(null, null))
                             {
-                                result.Message = upgradeResult.Error.Message;
+                                tenantDbContext.InstallerSqlType = tenant.DBSqlType;
+                                tenantDbContext.InstallerDatabaseEngineVersion = tenant.DBEngineVersion;
+                                tenantDbContext.InstallerConnectionString = tenant.DBConnectionString;
+                                // Push latest model into database      
+                                tenantDbContext.Database.Migrate();
+                                result.Success = true;
                             }
                         }
-
+                        catch (Exception ex)
+                        {
+                            result.Message = ex.Message;
+                        }
+                       
                         // execute any version specific upgrade logic
                         string version = tenant.Version;
                         int index = Array.FindIndex(versions, item => item == version);
@@ -533,9 +521,9 @@ namespace Oqtane.Infrastructure
             return connectionString;
         }
 
-        public void UpdateMasterSqlType(SqlType sqlType)
+        public void UpdateMasterSqlType(SqlType? sqlType)
         {
-            var sqlTypeName = Enum.GetName(sqlType);
+            var sqlTypeName = sqlType != null ? Enum.GetName((SqlType)sqlType) : string.Empty;
 
             AddOrUpdateAppSetting($"Database:{SettingKeys.DatabaseTypeKey}", sqlTypeName);
             _config.Reload();
@@ -609,21 +597,6 @@ namespace Oqtane.Infrastructure
             // double fallback to default value - allow hold sample keys in config
             if (string.IsNullOrEmpty(value)) value = defaultValue;
             return value;
-        }
-
-        private void MigrateScriptNamingConvention(SqlType sqlType, string scriptType, string connectionString)
-        {
-            // migrate to new naming convention for scripts
-            var migrateConfig = DeployChanges
-                .To
-                .ConfiguredSqlDatabase(sqlType, NormalizeConnectionString(connectionString))
-                .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), s => s == scriptType + "00.00.00.00.sql");
-            
-            var migrate = migrateConfig.Build();
-            if (migrate.IsUpgradeRequired())
-            {
-                migrate.PerformUpgrade();
-            }
         }
     }
 }

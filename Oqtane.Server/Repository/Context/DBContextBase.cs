@@ -15,6 +15,14 @@ namespace Oqtane.Repository
         private ITenantResolver _tenantResolver;
         private IHttpContextAccessor _accessor;
 
+        protected ITenantResolver TenantResolver
+        {
+            get
+            {
+                return _tenantResolver;
+            }
+        }
+
         public DBContextBase(ITenantResolver tenantResolver, IHttpContextAccessor accessor)
         {
             _tenantResolver = tenantResolver;
@@ -27,7 +35,7 @@ namespace Oqtane.Repository
             var sqlType = tenant.DBSqlType.ToEnum<SqlType>();
             if (tenant != null)
             {
-                optionsBuilder.UseConfiguredSqlProvider(sqlType, tenant.DBEngineVersion, tenant.DBConnectionString.Replace("|DataDirectory|", AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString()));
+                optionsBuilder.UseConfiguredSqlProvider(sqlType, "Tenant", tenant.DBEngineVersion, tenant.DBConnectionString.Replace("|DataDirectory|", AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString()));
             }
             base.OnConfiguring(optionsBuilder);
         }

@@ -20,7 +20,8 @@ namespace Oqtane.Repository
             _databaseEngineVersion = databaseVersion;
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseConfiguredSqlProvider(_sqlType, _databaseEngineVersion, _connectionString);
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseConfiguredSqlProvider(_sqlType, "Master", _databaseEngineVersion, _connectionString);
+
 
         public virtual DbSet<Alias> Alias { get; set; }
         public virtual DbSet<Tenant> Tenant { get; set; }

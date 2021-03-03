@@ -10,7 +10,7 @@ using Oqtane.Repository;
 namespace Oqtane.Migrations.Master.MSSQL
 {
     [DbContext(typeof(MasterDBContext))]
-    [Migration("20210303021752_InitialMasterDbContextCreate")]
+    [Migration("20210303231559_InitialMasterDbContext")]
     partial class InitialMasterDbContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

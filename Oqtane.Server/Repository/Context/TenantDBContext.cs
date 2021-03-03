@@ -39,9 +39,6 @@ namespace Oqtane.Repository
         {
             if (TenantResolver?.GetTenant() == null)
             {
-                //var sqlType = SqlType.MSSQL;//InstallerSqlType.ToEnum<SqlType>();
-                //var databaseEngineVersion = "";//InstallerDatabaseEngineVersion;
-                //var connectionString = "Data Source=PPC09;Initial Catalog=Oqtane-202103031301;Integrated Security=SSPI;";//InstallerConnectionString;
                 var sqlType = InstallerSqlType.ToEnum<SqlType>();
                 var databaseEngineVersion = InstallerDatabaseEngineVersion;
                 var connectionString = InstallerConnectionString;

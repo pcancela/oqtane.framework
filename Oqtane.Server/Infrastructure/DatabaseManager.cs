@@ -205,11 +205,18 @@ namespace Oqtane.Infrastructure
                     UpdateMasterDatabaseVersion(install.DatabaseEngineVersion);
                 }
 
-                using (var masterDbContext = new MasterDBContext(_config))
+                try
                 {
-                    // Push latest model into database      
-                    masterDbContext.Database.Migrate();
-                    result.Success = true;
+                    using (var masterDbContext = new MasterDBContext(_config))
+                    {
+                        // Push latest model into database      
+                        masterDbContext.Database.Migrate();
+                        result.Success = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Message = ex.Message;
                 }
 
                 if (!result.Success)

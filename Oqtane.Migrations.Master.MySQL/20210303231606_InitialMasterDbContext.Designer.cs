@@ -9,7 +9,7 @@ using Oqtane.Repository;
 namespace Oqtane.Migrations.Master.MySQL
 {
     [DbContext(typeof(MasterDBContext))]
-    [Migration("20210303023217_InitialMasterDbContextCreate")]
+    [Migration("20210303231606_InitialMasterDbContext")]
     partial class InitialMasterDbContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -17,9 +17,13 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Migrations\**" />
     <Compile Remove="wwwroot\Modules\Templates\**" />
+    <Content Remove="Migrations\**" />
     <Content Remove="wwwroot\Modules\Templates\**" />
+    <EmbeddedResource Remove="Migrations\**" />
     <EmbeddedResource Remove="wwwroot\Modules\Templates\**" />
+    <None Remove="Migrations\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.0" />

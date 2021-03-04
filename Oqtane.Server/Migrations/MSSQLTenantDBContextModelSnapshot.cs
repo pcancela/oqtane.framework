@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oqtane.Repository;
 
-namespace Oqtane.Migrations.Tenant.MSSQL
+namespace Oqtane.Migrations
 {
-    [DbContext(typeof(TenantDBContext))]
-    [Migration("20210303231622_InitialTenantDbContext")]
-    partial class InitialTenantDbContext
+    [DbContext(typeof(MSSQLTenantDBContext))]
+    partial class MSSQLTenantDBContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

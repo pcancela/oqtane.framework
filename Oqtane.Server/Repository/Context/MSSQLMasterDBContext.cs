@@ -9,7 +9,8 @@ namespace Oqtane.Repository
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=Oqtane;Initial Catalog=Oqtane;Integrated Security=SSPI;");
+            // YOUR DEV ENVIRONMENT CONNECTION STRING!
+            optionsBuilder.UseSqlServer("Data Source=PPC09;Initial Catalog=Oqtane-migrations;Integrated Security=SSPI;");
         }
     }
 }

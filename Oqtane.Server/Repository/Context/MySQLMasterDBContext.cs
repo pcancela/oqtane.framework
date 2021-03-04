@@ -11,7 +11,8 @@ namespace Oqtane.Repository
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql("Server=Oqtane;Port=3306;User Id=Oqtane;Password=Oqtane;Database=Oqtane;", new MySqlServerVersion(new Version(0, 0, 0)), mySqlOptions =>
+            // YOUR DEV ENVIRONMENT CONNECTION STRING!
+            optionsBuilder.UseMySql("Server=;Port=3306;User Id=root;Password=;Database=Oqtane-migrations;", new MySqlServerVersion(new Version(5, 1, 73)), mySqlOptions =>
             {
                 mySqlOptions.CharSetBehavior(CharSetBehavior.NeverAppend);
             });

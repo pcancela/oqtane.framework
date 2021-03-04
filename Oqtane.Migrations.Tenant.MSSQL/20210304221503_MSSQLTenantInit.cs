@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Oqtane.Migrations.Tenant.MSSQL
 {
-    public partial class InitialTenantDbContext : Migration
+    public partial class MSSQLTenantInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

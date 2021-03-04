@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Oqtane.Migrations.Tenant.MySQL
 {
-    public partial class InitialTenantDbContext : Migration
+    public partial class MySQLTenantInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

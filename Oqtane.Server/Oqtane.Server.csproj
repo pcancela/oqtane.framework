@@ -17,9 +17,13 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Migrations\**" />
     <Compile Remove="wwwroot\Modules\Templates\**" />
+    <Content Remove="Migrations\**" />
     <Content Remove="wwwroot\Modules\Templates\**" />
+    <EmbeddedResource Remove="Migrations\**" />
     <EmbeddedResource Remove="wwwroot\Modules\Templates\**" />
+    <None Remove="Migrations\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.0" />
@@ -54,21 +58,8 @@
     <UpgradeFiles Include="$(ProjectDir)bin\Release\net5.0\Oqtane.Upgrade.runtimeconfig.json" />
     <TemplateFiles Include="$(ProjectDir)wwwroot\Modules\Templates\**\*.*" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="20210304180301_MSSQLTenantInitial.cs" />
-    <Compile Remove="20210304180301_MSSQLTenantInitial.Designer.cs" />
-    <Compile Remove="20210304180311_MySQLTenantInitial.cs" />
-    <Compile Remove="20210304180311_MySQLTenantInitial.Designer.cs" />
-    <Compile Remove="20210304180609_MSSQLMasterInitial.cs" />
-    <Compile Remove="20210304180609_MSSQLMasterInitial.Designer.cs" />
-    <Compile Remove="20210304180619_MySQLMasterInitial.cs" />
-    <Compile Remove="20210304180619_MySQLMasterInitial.Designer.cs" />
-    <Compile Remove="MSSQLMasterDBContextModelSnapshot.cs" />
-    <Compile Remove="MSSQLTenantDBContextModelSnapshot.cs" />
-    <Compile Remove="MySQLMasterDBContextModelSnapshot.cs" />
-    <Compile Remove="MySQLTenantDBContextModelSnapshot.cs" />
-  </ItemGroup>
   <Target Name="AddPayloadsFolder" AfterTargets="Publish">
     <Copy SourceFiles="@(UpgradeFiles)" DestinationFiles="@(UpgradeFiles->'$(PublishDir)%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
     <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="@(TemplateFiles->'$(PublishDir)wwwroot\Modules\Templates\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
-  </Target></Project>
+  </Target>
+</Project>

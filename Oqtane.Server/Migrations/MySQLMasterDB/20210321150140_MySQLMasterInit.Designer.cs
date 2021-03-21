@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oqtane.Repository;
 
-namespace Oqtane.Migrations
+namespace Oqtane.Migrations.Master.MySQL
 {
-    [DbContext(typeof(MySQLMasterDBContext))]
-    partial class MySQLMasterDBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(MasterDBContext))]
+    [Migration("20210321150140_MySQLMasterInit")]
+    partial class MySQLMasterInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

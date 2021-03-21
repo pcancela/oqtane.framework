@@ -9,7 +9,7 @@ using Oqtane.Repository;
 namespace Oqtane.Migrations.Tenant.MySQL
 {
     [DbContext(typeof(TenantDBContext))]
-    [Migration("20210304221513_MySQLTenantInit")]
+    [Migration("20210321150209_MySQLTenantInit")]
     partial class MySQLTenantInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

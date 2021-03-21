@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oqtane.Repository;
 
-namespace Oqtane.Migrations
+namespace Oqtane.Migrations.Master.MSSQL
 {
-    [DbContext(typeof(MSSQLMasterDBContext))]
-    partial class MSSQLMasterDBContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(MasterDBContext))]
+    partial class MasterDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

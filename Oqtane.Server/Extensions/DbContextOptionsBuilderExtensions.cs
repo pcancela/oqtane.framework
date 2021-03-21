@@ -17,7 +17,7 @@ namespace Oqtane.Extensions
                         mySqlOptions =>
                         {
                             mySqlOptions.CharSetBehavior(CharSetBehavior.NeverAppend);
-                            mySqlOptions.MigrationsAssembly($"Oqtane.Migrations.{contextType}.MySQL");
+                            //mySqlOptions.MigrationsAssembly($"Oqtane.Migrations.{contextType}.MySQL");
                         }
                     );
                 default:
@@ -25,7 +25,7 @@ namespace Oqtane.Extensions
                         connectionString.Replace("|DataDirectory|", AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString()),
                         sqlOptions =>
                         {
-                            sqlOptions.MigrationsAssembly($"Oqtane.Migrations.{contextType}.MSSQL");
+                            //sqlOptions.MigrationsAssembly($"Oqtane.Migrations.{contextType}.MSSQL");
                         }
                     );
             }

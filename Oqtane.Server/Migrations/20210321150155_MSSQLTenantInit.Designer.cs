@@ -9,8 +9,8 @@ using Oqtane.Repository;
 
 namespace Oqtane.Migrations.Tenant.MSSQL
 {
-    [DbContext(typeof(MSSQLTenantDBContext))]
-    [Migration("20210304221503_MSSQLTenantInit")]
+    [DbContext(typeof(TenantDBContext))]
+    [Migration("20210321150155_MSSQLTenantInit")]
     partial class MSSQLTenantInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
